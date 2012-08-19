@@ -68,5 +68,7 @@ service = server.listen(sys.args[1], function (request, response) {
       response.close();
 
     }
+    
+    page.release();
 
 });
