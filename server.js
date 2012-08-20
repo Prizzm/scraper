@@ -49,13 +49,15 @@ service = server.listen(sys.args[1], function (request, response) {
 
         console.log(JSON.stringify(itemData));
         output_json = JSON.stringify(out_itemData);
-        
+
         if ( callback_func != null && callback_func != "" ) {
           output_json = callback_func + "(" + output_json + ");"
         }
 
         response.write(output_json);
         response.close();
+
+        page.release();
 
       });
 
@@ -67,8 +69,8 @@ service = server.listen(sys.args[1], function (request, response) {
       response.write("No URL Provided");
       response.close();
 
+      page.release();
+
     }
-    
-    page.release();
 
 });
