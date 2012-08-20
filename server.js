@@ -56,6 +56,8 @@ service = server.listen(sys.args[1], function (request, response) {
 
         response.write(output_json);
         response.close();
+        
+        //page.release();
 
         page.release();
 
