@@ -504,7 +504,7 @@ PageScraper.prototype.getGenericImageData = function(includeSrc) {
           squareness = imgs[i].height / imgs[i].width;
         }
 
-        if (pixelCount > 1000 && squareness > 0.5 
+        if (pixelCount > 1000 && squareness > 0.4 
             || (includeSrc && imgs[i].src == includeSrc)) {
           var imageIndex = imageArray.length;
           imageArray[imageIndex] = {};
