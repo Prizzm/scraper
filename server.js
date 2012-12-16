@@ -18,57 +18,65 @@ function getParameterByName(name, url) {
 
 service = server.listen(sys.args[1], function (request, response) {
 
-    var page = require('webpage').create();
-    
-    var page_url = getParameterByName('url', request.url);
-    var callback_func = getParameterByName('callback', request.url);
-    
-    if ( page_url != null && page_url != "" ) {
+    (function(){
 
-      page.open(page_url, function (status) {
+      var page = require('webpage').create();
+      
+      var page_url = getParameterByName('url', request.url);
+      var callback_func = getParameterByName('callback', request.url);
+      
+      if ( page_url != null && page_url != "" ) {
 
-        page.injectJs("add.js");
+        page.open(page_url, function (status) {
 
-        var itemData = page.evaluate(function () {
-            return window.itemData;
-        });  
+          page.injectJs("add.js");
 
-        response.statusCode = 200;
+          var itemData = page.evaluate(function () {
+              return window.itemData;
+          });  
 
-        var out_itemData = {};
+          response.statusCode = 200;
 
-        out_itemData.title = itemData.title;
-        if ( itemData.price != null && itemData.price.length > 1 ) {
-          out_itemData.price = parseFloat(itemData.price.slice(1).replace(/,/g, '')); // remove $
-        }
-        out_itemData.images = [];
-        for ( var i in itemData.imageArray ) {
-          console.log(JSON.stringify(itemData.imageArray[i]));
-          out_itemData.images.push(itemData.imageArray[i].src);
-        }
+          var out_itemData = {};
 
-        console.log(JSON.stringify(itemData));
-        output_json = JSON.stringify(out_itemData);
-        
-        if ( callback_func != null && callback_func != "" ) {
-          output_json = callback_func + "(" + output_json + ");"
-        }
+          out_itemData.title = itemData.title;
+          if ( itemData.price != null && itemData.price.length > 1 ) {
+            out_itemData.price = parseFloat(itemData.price.slice(1).replace(/,/g, '')); // remove $
+          }
+          out_itemData.images = [];
+          for ( var i in itemData.imageArray ) {
+            console.log(JSON.stringify(itemData.imageArray[i]));
+            out_itemData.images.push(itemData.imageArray[i].src);
+          }
 
-        response.write(output_json);
+          console.log(JSON.stringify(itemData));
+          output_json = JSON.stringify(out_itemData);
+
+          if ( callback_func != null && callback_func != "" ) {
+            output_json = callback_func + "(" + output_json + ");"
+          }
+
+          response.write(output_json);
+          response.close();
+          
+          //page.release();
+
+          page.release();
+
+        });
+
+      }
+      else
+      {
+
+        response.statusCode = 500;
+        response.write("No URL Provided");
         response.close();
 
-      });
+        page.release();
 
-    }
-    else
-    {
-
-      response.statusCode = 500;
-      response.write("No URL Provided");
-      response.close();
-
-    }
+      }
     
-    page.release();
+    })();
 
 });
