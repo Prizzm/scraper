@@ -61,7 +61,7 @@ service = server.listen(sys.args[1], function (request, response) {
           
           //page.release();
 
-          page.release();
+          page.close();
 
         });
 
@@ -73,7 +73,7 @@ service = server.listen(sys.args[1], function (request, response) {
         response.write("No URL Provided");
         response.close();
 
-        page.release();
+        page.close();
 
       }
     
